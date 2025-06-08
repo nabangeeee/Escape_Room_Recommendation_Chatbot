@@ -1,0 +1,12 @@
+# 파이썬 가상환경
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# macOS 시스템 파일
+.DS_Store
+
+# 민감한 파일
+openai_config.py
+.env
