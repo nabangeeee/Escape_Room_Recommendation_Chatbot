@@ -20,7 +20,8 @@ def extract_user_preferences(user_input: str) -> dict:
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=messages,
-        temperature=0.5 #창의성 정도를 조절. 0.0: 정직하고 예측 가능한 답변, 0.5: 균형잡힌 창의성과 일관성(보통 자주 쓰임), 1.0: 더욱 창의적이고 다양하게 말함.
+        temperature=0.5, #창의성 정도를 조절. 0.0: 정직하고 예측 가능한 답변, 0.5: 균형잡힌 창의성과 일관성(보통 자주 쓰임), 1.0: 더욱 창의적이고 다양하게 말함.
+        request_timeout=30
     )
 
     result = response.choices[0].message.content.strip() #답변 후보들 중에 가장 첫번째꺼를 선택. 후보는 기본적으로 1개만 생성. 그러나 여려개 생성 가능.
