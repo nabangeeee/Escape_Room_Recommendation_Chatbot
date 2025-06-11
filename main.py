@@ -5,7 +5,7 @@ from recommend import load_theme_data, filter_themes
 user_input = "공포는 싫고 2명이 홍대에서 감성 테마 하고 싶어"
 prefs = extract_user_preferences(user_input)
 
-print("🎯 사용자 조건:", prefs)
+print("사용자 조건:", prefs)
 
 df = load_theme_data("Room_escape_data.csv")
 recommended = filter_themes(df, prefs)
