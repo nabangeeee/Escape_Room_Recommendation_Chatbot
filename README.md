@@ -41,14 +41,19 @@ This project understands natural language input from users and recommends matchi
 ## 📁 Project Structure (with explanation)
 escape_chatvot/
 
-├── main.py                  # 메인 실행 파일
+├── main.py                  # Main script to run the chatbot
 
-├── gpt_api.py              # OpenAI API 연동
+├── gpt_api.py               # Handles communication with OpenAI API for extracting preferences
 
-├── recommend.py            # 데이터 로딩 및 필터링 로직
+├── recommend.py             # Loads and filters the escape room data based on extracted preferences
 
-├── Room_escape_data.csv    # 테마 데이터셋
+├── Room_escape_data.csv     # Dataset containing escape room theme information
 
-├── openai_config.py        # API 키 설정
+├── openai_config.py         # Stores OpenAI API key and related settings
 
-└── web_ui.html (선택)      # 웹 챗봇 UI 샘플
+├── web_ui.html              # (Planned to expand) Web-based UI for chatbot interaction
+
+├── venv/                    # Python virtual environment (excluded from Git)
+
+└── .env / .gitignore        # Environment variables & ignored files configuration
+
