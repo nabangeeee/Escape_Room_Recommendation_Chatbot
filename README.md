@@ -40,9 +40,15 @@ This project understands natural language input from users and recommends matchi
 
 ## 📁 Project Structure (with explanation)
 escape_chatvot/
+
 ├── main.py                  # 메인 실행 파일
+
 ├── gpt_api.py              # OpenAI API 연동
+
 ├── recommend.py            # 데이터 로딩 및 필터링 로직
+
 ├── Room_escape_data.csv    # 테마 데이터셋
+
 ├── openai_config.py        # API 키 설정
+
 └── web_ui.html (선택)      # 웹 챗봇 UI 샘플
