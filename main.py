@@ -1,4 +1,5 @@
 # main.py
+
 from gpt_api import extract_user_preferences
 from recommend import load_theme_data, filter_themes
 
@@ -12,3 +13,6 @@ recommended = filter_themes(df, prefs)
 
 print("\n🔍 추천 테마:")
 print(recommended[["theme_name", "store_name", "genre", "location", "rating", "reservation_link"]])
+
+import tabulate
+print(tabulate.__version__)
