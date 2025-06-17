@@ -12,9 +12,7 @@ def extract_user_preferences(user_input: str) -> dict:
 
     messages = [
         {"role": "system", "content": system_prompt}, # 해당 딕셔너리는 챗봇에서 거의 필수로 쓰임. 역할을 부여. role:누가 말하는지, content: 무슨 말을 하는지
-        {"role": "user", "content": user_input}
-        
-    ]
+        {"role": "user", "content": user_input}]
     
 
     response = openai.ChatCompletion.create(

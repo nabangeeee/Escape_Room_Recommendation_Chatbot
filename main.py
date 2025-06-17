@@ -11,7 +11,7 @@ print("사용자 조건:", prefs)
 df = load_theme_data("Room_escape_data.csv")
 recommended = filter_themes(df, prefs)
 
-print("\n🔍 추천 테마:")
+print("\n 추천 테마:")
 print(recommended[["theme_name", "store_name", "genre", "location", "rating", "reservation_link"]])
 
 import tabulate
