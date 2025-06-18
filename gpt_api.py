@@ -1,19 +1,40 @@
 # gpt_api.py
 import openai
 import openai_config  # API 키 로딩
+import pandas as pd
+
+# CSV 기반으로 가능한 옵션 추출
+def get_available_options(csv_path="Room_escape_data.csv"):
+    df = pd.read_csv(csv_path)
+    locations = sorted(set(df['location'].dropna()))
+    genres = sorted(set(g for genre in df['genre'].dropna() for g in genre.split(',')))
+    return locations, genres
+
 
 def extract_user_preferences(user_input: str) -> dict:
-    system_prompt = """
-    너는 방탈출 추천 AI야. 사용자의 대화를 기반으로 추천 조건을 추출해줘.
-    다음 형식의 JSON으로 응답해:
-    {"location": ..., "people": ..., "genre": [...], "fear_ok": true/false}
+    locations, genres = get_available_options("Room_escape_data.csv")
+
+    system_prompt = f"""
+    너는 방탈출 추천 AI야. 사용자의 대화를 기반으로 추천 조건을 JSON으로 추출해줘.
+    다음은 가능한 지역과 장르야:
+
+    - 가능한 지역: {locations}
+    - 가능한 장르: {genres}
+    - 인원수는 정수형 숫자야. 공포가 괜찮다면 fear_ok=true, 싫다면 false로 해줘.
+
+    아래 형식으로 JSON 응답을 줘:
+    {{
+      "location": "홍대",
+      "people": 3,
+      "genre": ["공포"],
+      "fear_ok": true
+    }}
     """
 
-
     messages = [
-        {"role": "system", "content": system_prompt}, # 해당 딕셔너리는 챗봇에서 거의 필수로 쓰임. 역할을 부여. role:누가 말하는지, content: 무슨 말을 하는지
-        {"role": "user", "content": user_input}]
-    
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_input}
+    ]
 
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",

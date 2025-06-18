@@ -3,6 +3,7 @@
 from gpt_api import extract_user_preferences
 from recommend import load_theme_data, filter_themes
 
+
 user_input = "3명이 홍대에서 공포테마 하고 싶어"
 prefs = extract_user_preferences(user_input)
 
@@ -16,3 +17,5 @@ print(recommended[["theme_name", "store_name", "genre", "location", "rating", "r
 
 import tabulate
 print(tabulate.__version__)
+
+
