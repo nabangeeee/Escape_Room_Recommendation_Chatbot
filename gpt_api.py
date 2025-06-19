@@ -10,6 +10,14 @@ def get_available_options(csv_path="Room_escape_data.csv"):
     genres = sorted(set(g for genre in df['genre'].dropna() for g in genre.split(',')))
     return locations, genres
 
+import pandas as pd
+
+# CSV 기반으로 가능한 옵션 추출
+def get_available_options(csv_path="Room_escape_data.csv"):
+    df = pd.read_csv(csv_path)
+    locations = sorted(set(df['location'].dropna()))
+    genres = sorted(set(g for genre in df['genre'].dropna() for g in genre.split(',')))
+    return locations, genres
 
 def extract_user_preferences(user_input: str) -> dict:
     locations, genres = get_available_options("Room_escape_data.csv")
@@ -29,6 +37,8 @@ def extract_user_preferences(user_input: str) -> dict:
       "genre": ["공포"],
       "fear_ok": true
     }}
+
+    사용자가 명확하게 말하지 않은 경우엔 추론해줘. 예를 들어 '무서운 건 싫어' → fear_ok: false, '혼자 갈 거야' → people: 1
     """
 
     messages = [
