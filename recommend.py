@@ -4,7 +4,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 
 
-def load_theme_data(csv_path="Room_escape_data.csv"):
+def load_theme_data(csv_path="Room_escape_data_with_embeddings.csv"):
     df = pd.read_csv(csv_path)
     return df
 
@@ -50,3 +50,4 @@ def recommend_by_embedding(df, user_input, top_k=3):
 
     # 유사도 기준 정렬하여 상위 K개 추천
     return df.sort_values(by="similarity", ascending=False).head(top_k)
+

@@ -1,5 +1,3 @@
-# main.py
-
 from gpt_api import extract_user_preferences
 from recommend import load_theme_data, filter_themes
 
@@ -9,7 +7,7 @@ prefs = extract_user_preferences(user_input)
 
 print("사용자 조건:", prefs)
 
-df = load_theme_data("Room_escape_data.csv")
+df = load_theme_data("Room_escape_data_with_embeddings.csv")
 recommended = filter_themes(df, prefs)
 
 print("\n 추천 테마:")
