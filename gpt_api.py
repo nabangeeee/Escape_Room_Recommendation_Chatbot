@@ -10,7 +10,7 @@ def get_embedding(text: str, model="text-embedding-3-small"):
     """
     # 환경변수에서 API 키 불러오기 (이미 openai_config 등에서 설정되어 있으면 이 줄은 생략 가능)
     openai.api_key = os.getenv("OPENAI_API_KEY")
-    response = openai.Embedding.create(
+    response = openai.embedding.create(
         input=[text],
         model=model
     )
@@ -22,8 +22,6 @@ def get_available_options(csv_path="Room_escape_data_with_embeddings.csv"):
     locations = sorted(set(df['location'].dropna()))
     genres = sorted(set(g for genre in df['genre'].dropna() for g in genre.split(',')))
     return locations, genres
-
-import pandas as pd
 
 # CSV 기반으로 가능한 옵션 추출
 def get_available_options(csv_path="Room_escape_data_with_embeddings.csv"):

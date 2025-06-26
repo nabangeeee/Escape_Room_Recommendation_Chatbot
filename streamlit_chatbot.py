@@ -1,6 +1,6 @@
 import streamlit as st
 from gpt_api import extract_user_preferences
-from recommend import load_theme_data, filter_themes, recommend_by_embedding
+from recommend import load_theme_data, recommend_by_embedding, recommend_by_embedding
 
 st.title("방탈출 챗봇")
 
@@ -17,7 +17,7 @@ if user_message := st.chat_input("원하는 조건을 입력해 주세요! 저 �
         prefs = extract_user_preferences(user_message)
         df = load_theme_data("Room_escape_data_with_embeddings.csv")
         # 기존 필터 기반 추천
-        filtered_df = filter_themes(df, prefs)
+        filtered_df = recommend_by_embedding(df, prefs)
 
         # 🎯 의미 기반(임베딩) 추천
         recommended = recommend_by_embedding(filtered_df if not filtered_df.empty else df, user_message)
@@ -33,9 +33,6 @@ if user_message := st.chat_input("원하는 조건을 입력해 주세요! 저 �
     st.chat_message("assistant").markdown(bot_message)
     st.session_state.chat_history.append({"role": "user", "content": user_message})
     st.session_state.chat_history.append({"role": "assistant", "content": bot_message})
-
-
-
 
 
 
