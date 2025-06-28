@@ -32,7 +32,7 @@ def load_theme_data(csv_path="Room_escape_data_with_embeddings.csv"):
 #     return df[df.apply(matches, axis=1)]
 
 
-def recommend_by_embedding(df, user_input, top_k=10):
+def recommend_by_embedding(df, user_input, top_k=3):
     # 사용자 입력 임베딩
     user_embedding = np.array(get_embedding(user_input)).reshape(1, -1)
 
