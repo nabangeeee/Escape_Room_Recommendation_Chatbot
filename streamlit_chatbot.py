@@ -19,7 +19,7 @@ if user_message := st.chat_input("원하는 조건을 입력해 주세요! 저 �
         # 기존 필터 기반 추천
         filtered_df = recommend_by_embedding(df, prefs)
 
-        # 🎯 의미 기반(임베딩) 추천
+        # 의미 기반(임베딩) 추천
         recommended = recommend_by_embedding(filtered_df if not filtered_df.empty else df, user_message)
 
         if not recommended.empty:
