@@ -5,7 +5,7 @@ from embedding_utils import get_embedding # 이미 정의한 함수 사용
 # 1. 데이터 불러오기
 df = pd.read_csv("Room_escape_data.csv")
 
-# 2. 임베딩 생성용 텍스트 조합 (네 데이터 컬럼명 기준)
+# 2. 임베딩 생성용 텍스트 조합
 def make_embedding_text(row):
     # 주요 특징을 자연스럽게 이어붙임
     return (

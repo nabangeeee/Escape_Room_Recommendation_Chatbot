@@ -2,39 +2,36 @@ import pandas as pd
 from embedding_utils import get_embedding
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
-
+import ast
 
 def load_theme_data(csv_path="Room_escape_data_with_embeddings.csv"):
     df = pd.read_csv(csv_path)
+        # 문자열로 저장된 embedding을 리스트로 변환
+    if 'embedding' in df.columns:
+        df['embedding'] = df['embedding'].apply(ast.literal_eval)
     return df
 
-# def filter_themes(df, conditions):
-#     loc = conditions.get("location", "")
-#     people = conditions.get("people", 0)
-#     genre_pref = conditions.get("genre", [])
-#     fear_ok = conditions.get("fear_ok", True)
 
-#     def matches(row):
-#         genre_list = [g.strip() for g in row["genre"].split(",")]
+def filter_themes(df, prefs):
+    filtered = df[
+        (df['location'] == prefs['location']) &
+        (df['min_people'] <= prefs['people']) &
+        (df['max_people'] >= prefs['people'])
+    ]
 
-#         fear_condition = True
-#         if not fear_ok:
-#             # row["fear"] 값이 없으면 기본값 "0"
-#             fear_condition = (str(row.get("fear", "0")) == "0")
+    if not prefs.get('fear_ok', True):  # 공포 싫어하면 제거
+        filtered = filtered[~filtered['genre'].str.contains("공포")]
 
-#         return (
-#             (loc in row["location"]) and
-#             (row["min_people"] <= people <= row["max_people"]) and
-#             any(g in genre_list for g in genre_pref) and
-#             fear_condition
-#         )
+    if prefs.get('genre'):  # 선호 장르 필터링
+        for g in prefs['genre']:
+            filtered = filtered[filtered['genre'].str.contains(g)]
 
-#     return df[df.apply(matches, axis=1)]
+    return filtered
 
 
-def recommend_by_embedding(df, user_input, top_k=3):
+def recommend_by_embedding(df, user_message, top_k=3):
     # 사용자 입력 임베딩
-    user_embedding = np.array(get_embedding(user_input)).reshape(1, -1)
+    user_embedding = np.array(get_embedding(user_message)).reshape(1, -1)
 
     # 테마 데이터 내 텍스트 정보 준비
     if "embedding" not in df.columns:
