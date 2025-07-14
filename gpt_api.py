@@ -4,25 +4,6 @@ import openai_config  # API 키 로딩
 import pandas as pd
 import os
 
-def get_embedding(text: str, model="text-embedding-3-small"):
-    """
-    텍스트 임베딩 벡터를 반환합니다.
-    """
-    # 환경변수에서 API 키 불러오기 (이미 openai_config 등에서 설정되어 있으면 이 줄은 생략 가능)
-    openai.api_key = os.getenv("OPENAI_API_KEY")
-    response = openai.embedding.create(
-        input=[text],
-        model=model
-    )
-    return response.data[0].embedding
-
-# CSV 기반으로 가능한 옵션 추출
-def get_available_options(csv_path="Room_escape_data_with_embeddings.csv"):
-    df = pd.read_csv(csv_path)
-    locations = sorted(set(df['location'].dropna()))
-    genres = sorted(set(g for genre in df['genre'].dropna() for g in genre.split(',')))
-    return locations, genres
-
 # CSV 기반으로 가능한 옵션 추출
 def get_available_options(csv_path="Room_escape_data_with_embeddings.csv"):
     df = pd.read_csv(csv_path)
