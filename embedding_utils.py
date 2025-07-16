@@ -1,12 +1,12 @@
 import os
 from dotenv import load_dotenv #.env 파일에 저장된 환경 변수를 로드하는데 사용
-import openai
+from openai import OpenAI
 
 load_dotenv()  # .env 파일 로드
-openai.api_key = os.getenv("OPENAI_API_KEY") # 환경변수에서 "OPENAI_AI_KEY" 값을 읽어와 OPENAI API키로 설정
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY")) # 환경변수에서 "OPENAI_AI_KEY" 값을 읽어와 OPENAI API키로 설정
 
 def get_embedding(text: str, model="text-embedding-3-small"): # 입력값으로 text(문자열), model받음
-    response = openai.embeddings.create( #openai라이브러리의 embeddings기능에서 create메서드를 호출
+    response = client.embeddings.create( #openai라이브러리의 embeddings기능에서 create메서드를 호출
         input=[text],
         model=model
     )
