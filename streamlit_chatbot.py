@@ -4,8 +4,15 @@ from recommend import load_theme_data, recommend_by_embedding, filter_themes
 from langchain.vectorstores import Chroma
 from langchain.embeddings import OpenAIEmbeddings
 
+vectordb = Chroma(
+    persist_directory="./chroma_db", 
+    embedding_function=OpenAIEmbeddings()
+)
+
 # 모드 선택 UI (사이드바 or 본문 최상단)
 mode = st.sidebar.radio("모드 선택", ("방탈출 추천 챗봇", "RAG 임베딩 검색"))
+
+
 
 st.title("방탈출 & RAG 챗봇")
 
