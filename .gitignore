@@ -10,3 +10,6 @@ __pycache__/
 # 민감한 파일
 openai_config.py
 .env
+
+# 용량이 큰 크레마 파일
+chroma_db/
