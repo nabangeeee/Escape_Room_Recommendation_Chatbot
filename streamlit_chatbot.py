@@ -4,14 +4,12 @@ from recommend import load_theme_data, recommend_by_embedding, filter_themes
 from langchain.vectorstores import Chroma
 from langchain.embeddings import OpenAIEmbeddings
 
-vectordb = Chroma(
-    persist_directory="./chroma_db", 
-    embedding_function=OpenAIEmbeddings()
-)
+embeddings = OpenAIEmbeddings()
+vectordb = Chroma(persist_directory="./chroma_db", embedding_function=embeddings)
+
 
 # 모드 선택 UI (사이드바 or 본문 최상단)
 mode = st.sidebar.radio("모드 선택", ("방탈출 추천 챗봇", "RAG 임베딩 검색"))
-
 
 
 st.title("방탈출 & RAG 챗봇")
@@ -25,9 +23,13 @@ if mode == "RAG 임베딩 검색":
     if user_query:
         result_docs = vectordb.similarity_search(user_query, k=3)
         st.subheader("🔍 관련 정보")
-        for i, doc in enumerate(result_docs, 1):
-            st.write(f"**{i}.**")
-            st.write(doc.page_content)
+        if result_docs:
+            for i, doc in enumerate(result_docs, 1):
+                st.write(f"**{i}.**")
+                st.write(doc.page_content)
+    else:
+        st.info("검색 결과가 없습니다. 다른 단어로 시도해보세요!")
+
 
 elif mode == "방탈출 추천 챗봇":
     # 방탈출 추천 챗봇 모드 (기존 코드)
