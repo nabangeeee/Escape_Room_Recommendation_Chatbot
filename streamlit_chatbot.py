@@ -16,9 +16,6 @@ st.title("방탈출 & RAG 챗봇")
 
 if mode == "RAG 임베딩 검색":
     # RAG 검색 챗봇 모드
-    embeddings = OpenAIEmbeddings()
-    vectordb = Chroma(persist_directory="./chroma_db", embedding_function=embeddings)
-
     user_query = st.text_input("궁금한 내용을 입력하세요! (예: 방탈출 매장 공략법, 정보 등)")
     if user_query:
         result_docs = vectordb.similarity_search(user_query, k=3)
