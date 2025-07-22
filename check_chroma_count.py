@@ -1,7 +1,7 @@
 from langchain.vectorstores import Chroma
-from langchain.embeddings import OpenAIEmbeddings
+from langchain.embeddings import HuggingFaceEmbeddings
 
-embeddings = OpenAIEmbeddings()
+embeddings = HuggingFaceEmbeddings()
 vectordb = Chroma(
     persist_directory="./chroma_db",  # chroma_db 폴더가 있는 경로
     embedding_function=embeddings

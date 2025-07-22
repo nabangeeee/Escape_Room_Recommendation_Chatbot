@@ -1,17 +1,21 @@
 import pandas as pd
-import ast
 import chromadb
+from chromadb.utils import embedding_functions  # 임베딩 함수 준비 (예시)
 
-df = pd.read_csv("Room_escape_data_with_embeddings.csv")
-df['embedding'] = df['embedding'].apply(ast.literal_eval)
+df = pd.read_csv("Room_escape_data.csv")
 client = chromadb.PersistentClient(path="./chroma_db")
 
-# 컬렉션 존재하면 get, 없으면 create (더 안전!)
+# 임베딩 함수(간단한 예시): 실제 서비스할 땐 많은 데이터면 OpenAI API 등 사용!
+embedding_function = embedding_functions.DefaultEmbeddingFunction() 
+
 collection_name = "my_collection"
 try:
     collection = client.get_collection(name=collection_name)
 except Exception:
-    collection = client.create_collection(name=collection_name)
+    collection = client.create_collection(
+        name=collection_name,
+        embedding_function=embedding_function  # 임베딩 지정!
+    )
 
 for idx, row in df.iterrows():
     documents = (
@@ -23,7 +27,7 @@ for idx, row in df.iterrows():
         collection.add(
             ids=[f"{row['theme_name']}_{row['store_name']}_{row['location']}"],
             documents=[documents],
-            embeddings=[row['embedding']]
+            # embeddings 파라미터 삭제!
         )
     except Exception as e:
         print(f"건너뜀({row['theme_name']}): {e}")

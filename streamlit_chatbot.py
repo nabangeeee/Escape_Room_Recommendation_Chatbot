@@ -3,8 +3,13 @@ from gpt_api import extract_user_preferences
 from recommend import load_theme_data, recommend_by_embedding, filter_themes
 from langchain.vectorstores import Chroma
 from langchain.embeddings import OpenAIEmbeddings
+from langchain.embeddings import HuggingFaceEmbeddings
 
-embeddings = OpenAIEmbeddings()
+
+embeddings = HuggingFaceEmbeddings(
+    model_name="jhgan/ko-sroberta-multitask",
+    model_kwargs={'device': 'cpu'}
+)
 vectordb = Chroma(persist_directory="./chroma_db", embedding_function=embeddings)
 
 
@@ -15,20 +20,33 @@ mode = st.sidebar.radio("모드 선택", ("방탈출 추천 챗봇", "RAG 임베
 st.title("방탈출 & RAG 챗봇")
 
 if mode == "RAG 임베딩 검색":
+
+
+    # 2) 벡터DB 인스턴스화: 임베딩 함수 그대로!
+    vectordb = Chroma(persist_directory="./chroma_db", embedding_function=embeddings)
+
+
     # RAG 검색 챗봇 모드
     user_query = st.text_input("궁금한 내용을 입력하세요! (예: 방탈출 매장 공략법, 정보 등)")
     if user_query:
         result_docs = vectordb.similarity_search(user_query, k=3)
-        st.subheader("🔍 관련 정보")
+        st.subheader("관련 정보")
         if result_docs:
             for i, doc in enumerate(result_docs, 1):
                 st.write(f"**{i}.**")
                 st.write(doc.page_content)
+        else:
+            st.info("검색 결과가 없습니다. 다른 단어로 시도해보세요!")
     else:
-        st.info("검색 결과가 없습니다. 다른 단어로 시도해보세요!")
+        st.info("질문 내용을 입력해 주세요!")
 
 
 elif mode == "방탈출 추천 챗봇":
+
+    embeddings = OpenAIEmbeddings()
+    vectordb = Chroma(persist_directory="./chroma_db", embedding_function=embeddings)
+
+
     # 방탈출 추천 챗봇 모드 (기존 코드)
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
