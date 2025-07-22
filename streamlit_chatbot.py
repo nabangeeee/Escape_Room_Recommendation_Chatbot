@@ -4,6 +4,15 @@ from recommend import load_theme_data, recommend_by_embedding, filter_themes
 from langchain.vectorstores import Chroma
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.embeddings import HuggingFaceEmbeddings
+from naver_api import naver_blog_search
+import re
+
+def get_fear_level(page_content):
+    import re
+    match = re.search(r"공포도: ([\d\.]+)", page_content)
+    if match:
+        return float(match.group(1))
+    return None
 
 
 embeddings = HuggingFaceEmbeddings(
@@ -12,40 +21,68 @@ embeddings = HuggingFaceEmbeddings(
 )
 vectordb = Chroma(persist_directory="./chroma_db", embedding_function=embeddings)
 
-
 # 모드 선택 UI (사이드바 or 본문 최상단)
 mode = st.sidebar.radio("모드 선택", ("방탈출 추천 챗봇", "RAG 임베딩 검색"))
 
-
 st.title("방탈출 & RAG 챗봇")
 
-if mode == "RAG 임베딩 검색":
-
-
-    # 2) 벡터DB 인스턴스화: 임베딩 함수 그대로!
+if mode == "RAG 임베딩 검색":    # RAG 검색 챗봇 모드
+    # 벡터DB 인스턴스화
     vectordb = Chroma(persist_directory="./chroma_db", embedding_function=embeddings)
 
-
-    # RAG 검색 챗봇 모드
-    user_query = st.text_input("궁금한 내용을 입력하세요! (예: 방탈출 매장 공략법, 정보 등)")
+    user_query = st.text_input("궁금한 내용을 입력하세요! (예: 강남 감성테마 추천해줘!)")
     if user_query:
         result_docs = vectordb.similarity_search(user_query, k=3)
-        st.subheader("관련 정보")
-        if result_docs:
-            for i, doc in enumerate(result_docs, 1):
-                st.write(f"**{i}.**")
-                st.write(doc.page_content)
+        st.subheader("추천 테마 목록")
+
+        shown = 0
+        for i, doc in enumerate(result_docs, 1):
+            lines = doc.page_content.split(", ")
+            # 장르 확인
+            genre_line = [x for x in lines if x.startswith("장르: ")][0]
+            genre_name = genre_line.replace("장르: ","").strip()
+            # 공포도 확인
+            fear = get_fear_level(doc.page_content)
+
+            # 쿼리에 조건에 따라 필터
+            if "감성" in user_query and "감성" not in genre_name:
+                continue
+            if "공포" in user_query and (fear is None or fear < 1):  # 공포도 1 이상만 노출 등 원하는 기준 지정
+                continue
+
+            theme_name = lines[0].replace("테마: ", "")
+            detail_text = ", ".join(lines[1:])
+            st.markdown(f"""
+            <div style="margin-bottom:18px;">
+                <span style="font-size:2em; font-weight:bold;">{shown+1}. {theme_name}</span>
+                <br>
+                <span style="font-size:1em;">{detail_text}</span>
+            </div>
+            """, unsafe_allow_html=True)
+            shown += 1
+            if shown >= 3:
+                break
+
+            lines = doc.page_content.split(", ")
+
+            # ----- 네이버 블로그 추가 정보 -----
+            theme_title = doc.page_content.split(',')[0].replace("테마: ", "").strip()
+            naver_items = naver_blog_search(theme_title)
+            if naver_items:
+                st.write("> 아래 블로그를 클릭하면 더 자세한 정보를 볼 수 있어요!")
+                for item in naver_items:
+                    st.markdown(f"- [{item['title']}]({item['link']})")
+            else:
+                st.write("> 네이버 블로그에 추가 정보 없음")
         else:
-            st.info("검색 결과가 없습니다. 다른 단어로 시도해보세요!")
+            st.info("방탈출 추천 목록이에요. 즐거운 방탈출 되세요!")
     else:
         st.info("질문 내용을 입력해 주세요!")
 
 
 elif mode == "방탈출 추천 챗봇":
-
     embeddings = OpenAIEmbeddings()
     vectordb = Chroma(persist_directory="./chroma_db", embedding_function=embeddings)
-
 
     # 방탈출 추천 챗봇 모드 (기존 코드)
     if "chat_history" not in st.session_state:

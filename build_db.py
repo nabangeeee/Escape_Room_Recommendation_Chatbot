@@ -5,8 +5,19 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 # 1. 데이터 불러오기
 df = pd.read_csv("Room_escape_data.csv")
 docs = [
-    f"테마: {row['theme_name']}, 설명: {row['description'] if 'description' in row else ''}, "
-    f"장르: {row['genre']}, 지역: {row['location']}, 난이도: {row['difficulty']}, 평점: {row['rating']}"
+    (
+        f"테마: {row['theme_name']}, "
+        f"매장: {row['store_name']}, "
+        f"지역: {row['location']}, "
+        f"장르: {row['genre']}, "
+        f"인원: {row['min_people']}-{row['max_people']}명, "
+        f"난이도: {row['difficulty']}, "
+        f"공포도: {row['fear']}, "
+        f"평점: {row['rating']}, "
+        f"소요시간: {row['time']}분, "
+        f"주소: {row['address']}, "
+        f"예약링크: {row['reservation_link']}"
+    )
     for _, row in df.iterrows()
 ]
 
