@@ -1,5 +1,5 @@
 import pandas as pd
-import chromadb
+import chromadb # type: ignore
 from chromadb.utils import embedding_functions  # 임베딩 함수 준비 (예시)
 
 df = pd.read_csv("Room_escape_data.csv")
